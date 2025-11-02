@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email:Pass Duplicate Remover</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #fafafa;
+    }
+    textarea, pre {
+      width: 100%;
+      font-size: 16px;
+    }
+    textarea {
+      height: 180px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #output {
+      background: #f4f4f4;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Email:Password Duplicate Remover</h2>
 
+  <textarea id="input" placeholder="Paste your email:pass lines here..."></textarea><br>
+  <button onclick="removeDuplicates()">Clean Duplicates</button>
+  <button onclick="copyOutput()">Copy Output</button>
+
+  <h3>Output:</h3>
+  <pre id="output"></pre>
+
+  <script>
+    function removeDuplicates() {
+      const input = document.getElementById("input").value.trim();
+      if (!input) {
+        document.getElementById("output").textContent = "Please paste some lines first!";
+        return;
+      }
+
+      const lines = input.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+      const seen = new Set();
+      const result = [];
+
+      for (const line of lines) {
+        // Split by ":" to get the email part
+        const parts = line.split(":");
+        const email = parts[0]?.trim().toLowerCase();
+        if (!email) continue;
+
+        if (!seen.has(email)) {
+          seen.add(email);
+          result.push(line);
+        }
+      }
+
+      document.getElementById("output").textContent = result.join("\n");
+    }
+
+    function copyOutput() {
+      const output = document.getElementById("output").textContent;
+      if (!output.trim()) {
+        alert("No output to copy!");
+        return;
+      }
+      navigator.clipboard.writeText(output)
+        .then(() => alert("✅ Output copied to clipboard!"))
+        .catch(err => alert("❌ Failed to copy: " + err));
+    }
+  </script>
+</body>
+</html>
